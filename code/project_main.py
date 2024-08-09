@@ -1,9 +1,13 @@
 from geopy.geocoders import Nominatim # This is what we use to get longitude / latitude from a location name
 
-import openmeteo_requests
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
+import openmeteo_main
 
 locationDictionary = {}
+dataframes = []
 
 # We create a class so we can reuse this for multiple locations whilst returning multiple values (Longitude and Latitude).
 class GeoLocation: 
@@ -16,14 +20,26 @@ class GeoLocation:
 # Registers location to a dictionary, so we can keep it for later.
 def registerLocation(locationInput):
     location = GeoLocation(locationInput)
-    locationDictionary[locationInput] = {"longitude": location.longitude, "latitude": location.latitude}
+    locationDictionary[locationInput] = {"name": locationInput, "longitude": location.longitude, "latitude": location.latitude}
 
+def mapTemperatures():
+    for entry in locationDictionary:
+        locationDictionary[entry]["dataframe"] = openmeteo_main.getDataframe(locationDictionary[entry]["latitude"], locationDictionary[entry]['longitude'])
+        dataframes.append(locationDictionary[entry])
+    firstplot = dataframes[0]["dataframe"].plot(kind="line", x="date", y="temperature_2m", xlabel="Date", ylabel="Temperature (Celsius)", label=dataframes[0]["name"])
+    for i in range(0, len(dataframes)):
+        if i == 0:
+            continue
+        dataframes[i]["dataframe"].plot(kind="line", x="date", y="temperature_2m", xlabel="Date", ylabel="Temperature (Celsius)", label=dataframes[i]["name"], ax=firstplot)
+    plt.show()
 
 
 def tempRepeat():
     locationRaw = input("Location Name: ")
     registerLocation(locationRaw)
-    print(locationDictionary)
-    tempRepeat()
+    if (input("exit: ") == "y"):
+        mapTemperatures()
+    else:
+        tempRepeat()
 
 tempRepeat()
