@@ -34,12 +34,10 @@ def mapTemperatures():
     plt.show()
 
 
-def tempRepeat():
-    locationRaw = input("Location Name: ")
-    registerLocation(locationRaw)
-    if (input("exit: ") == "y"):
-        mapTemperatures()
-    else:
-        tempRepeat()
-
-tempRepeat()
+def registerLocations(list):
+    global locationDictionary, dataframes
+    locationDictionary = {}
+    dataframes = []
+    for i in list:
+        registerLocation(i)
+    mapTemperatures()
