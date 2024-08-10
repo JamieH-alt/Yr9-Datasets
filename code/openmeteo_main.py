@@ -4,9 +4,6 @@ import requests_cache
 import pandas as pd
 from retry_requests import retry
 
-import matplotlib.pyplot as plt
-import numpy as np
-
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
