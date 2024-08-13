@@ -1,5 +1,6 @@
 import customtkinter
 import customtkinter as ctk
+import tkinter as tk
 from PIL import Image
 
 import project_main
@@ -25,7 +26,7 @@ frame2.columnconfigure(0, weight=1)
 frame2.columnconfigure(1, weight=1)
 frame2.columnconfigure(2, weight=1)
 
-label = customtkinter.CTkLabel(master=frame2, text="Temperature Mapping", font=("Roboto", 18))
+label = customtkinter.CTkLabel(master=frame2, text="Temperature \nMapping", font=("Roboto", 18, "bold")).place(relx=0.15, rely=0.05)
 
 entryvalues = []
 entries = []
@@ -34,6 +35,30 @@ entryrowstart = 0
 entryrow = 0
 rawentrycount = 0
 entrycount = 0
+
+class MyDialog:
+    def __init__(self, parent):
+        top = self.top = customtkinter.CTkToplevel(parent)
+        top.geometry("200x100")
+        top.minsize(width=200, height=100)
+        top.maxsize(width=200, height=100)
+        top.title("CTTM")
+        top.attributes('-topmost', True)
+
+        self.myLabel = customtkinter.CTkLabel(top, text="An Error Has Occured")
+        self.myLabel.pack()
+
+        self.myLabel2 = customtkinter.CTkLabel(top, text="A locations name is incorrect!")
+        self.myLabel2.pack()
+
+        self.mySubmitButton = customtkinter.CTkButton(top, text="Ok", command=self.send, fg_color="#b94040")
+        self.mySubmitButton.pack()
+    
+    def send(self):
+        self.top.destroy()
+
+def errorDialog():
+    MyDialog(root)
 
 def remove(entry: customtkinter.CTkEntry, button: customtkinter.CTkButton):
     global entrycount, rawentrycount, entryvalues
@@ -105,7 +130,10 @@ def enterButton():
             locations.append(i.get())
     if len(locations) == 0:
         return
-    project_main.registerLocations(locations)
+    try:
+        project_main.registerLocations(locations)
+    except:
+        errorDialog()
 
 def show():
     global frame
