@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import openmeteo_main
-import project_ui
 
 locationDictionary = {}
 dataframes = []

@@ -2,6 +2,7 @@ import customtkinter
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
+import time
 
 import project_main
 
@@ -28,6 +29,9 @@ frame2.columnconfigure(2, weight=1)
 
 label = customtkinter.CTkLabel(master=frame2, text="Temperature \nMapping", font=("Roboto", 18, "bold")).place(relx=0.15, rely=0.05)
 
+enterstringvar = customtkinter.StringVar()
+enterstringvar.set("Enter")
+
 entryvalues = []
 entries = []
 entrycolumn = -1
@@ -44,6 +48,8 @@ class MyDialog:
         top.maxsize(width=200, height=100)
         top.title("CTTM")
         top.attributes('-topmost', True)
+        top.focus_set()
+
 
         self.myLabel = customtkinter.CTkLabel(top, text="An Error Has Occured")
         self.myLabel.pack()
@@ -124,23 +130,31 @@ def addEntry():
     rawentrycount += 1
 
 def enterButton():
+    enterstringvar.set("Graphing...")
+    frame.update()
+    time.sleep(0.1)
     locations = []
     for i in frame.winfo_children():
         if (isinstance(i, customtkinter.CTkEntry) and i.get() != ""):
             locations.append(i.get())
     if len(locations) == 0:
+        enterstringvar.set("Enter")
         return
     try:
         project_main.registerLocations(locations)
+        enterstringvar.set("Enter")
     except:
-        errorDialog()
+         print(locations)
+         enterstringvar.set("Enter")
+         errorDialog()
 
 def show():
     global frame
     image = customtkinter.CTkImage(dark_image=Image.open('logo.png'), size=(100, 75))
     label = customtkinter.CTkLabel(master=frame2, text="", image=image).place(relx=0.25, rely=0.3)
-    button = customtkinter.CTkButton(master=frame2, text="+", font=("Roboto", 11), command=addEntry).place(relx=0.15, rely=0.8)
-    enterbutton = customtkinter.CTkButton(master=frame2, text="Enter", font=("Roboto", 11), command=enterButton).place(relx=0.15, rely=0.9)
+    button = customtkinter.CTkButton(master=frame2, text="+", font=("Roboto", 11), command=addEntry, fg_color='#41508c').place(relx=0.15, rely=0.8)
+    enterbutton = customtkinter.CTkButton(master=frame2, textvariable=enterstringvar, font=("Roboto", 11), command=enterButton, fg_color='#41508c')
+    enterbutton.place(relx=0.15, rely=0.9)
 
 addEntry()
 show()
